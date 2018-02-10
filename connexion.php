@@ -1,7 +1,5 @@
 <?php
-	//inclusion de fichier de configuration
-	include('config.php');
-	
+	session_start();
 	//on verifie si le formulaire a été envoyé
 	if(isset($_POST['submit'])){
 		//la variable erreur vaut null par défaut
@@ -15,11 +13,16 @@
 		}
 		
 		//on verifie si le pseudo existe déja
-		$sql = mysql_query("SELECT * FROM users WHERE pseudo = '$pseudo'") or die('Erreur de la requête SQL');
-		$total = mysql_num_rows($sql);
-		if($total != 1){
+                $config=(require 'config.php');
+                
+                $conn=new PDO($config['DB_HOST'],$config['DB_USER'],$config['DB_PASS']);
+		$query = $conn->prepare("SELECT * FROM users WHERE pseudo = ?");
+		$query->execute(array($pseudo));
+                $rows=$query->fetchAll();
+                
+		if(count($rows) != 1){
 			//ce membre n'existe pas
-			$erreur = '<p class = "alert alert-danger">Ce pseudo n\'existe pas dans notre base de données</p>';
+			$erreur = '<p class = "alert alert-danger">Ce pseudo n\'existe pas dans notre base de donn�es</p>';
 		}
 		else{
 			/*
@@ -28,18 +31,20 @@
 				il faut le crypter avant en utilisant la fonction md5() 
 			*/
 			$password = md5($password);
-			//recuperation des données dans la table de l'utilisateur
-			$resultat = mysql_fetch_array($sql);
 			
-			if($resultat['password'] !== $password){
+			
+                if($rows[0]['password'] !== $password){
 				//le mot de passe est incorrect
 				$erreur = '<p class = "alert alert-danger">Votre mot de passe est incorrect</p>';
 			}
 			else{
 				//tout est bon on enregistre les données de l'utilisateur en session
-				$_SESSION['pseudo'] = $pseudo;
-				$_SESSION['id'] = $resultat['id'];
+				
+                                $_SESSION['pseudo'] = $pseudo;
+				$_SESSION['id'] = $rows[0]['users_id'];
 				//on le redirige sur la page d'accueil
+                                $conn=null;
+                               
 				header('location:index.php');
 			}
 			
