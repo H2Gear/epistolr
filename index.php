@@ -57,6 +57,7 @@
                         <p>Mail : <b><?php echo $donnees[0]['mail']; ?></b></p>
                         <p>
                             <a class = "btn btn-sm btn-primary" href = "redaction.php"><i class = "glyphicon glyphicon-edit"></i> Rédiger</a>
+                            <a class = "btn btn-sm btn-primary" href = "mcorrespondances.php">Mes correspondances</a>
                             <a class = "btn btn-sm btn-success" href = "modifier.php"><i class = "glyphicon glyphicon-edit"></i> Modifier votre profil</a>
                             <a class = "btn btn-sm btn-info" href = "deconnexion.php"><i class = "glyphicon glyphicon-off"></i> Déconnexion</a>
                         </p>
