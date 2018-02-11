@@ -1,6 +1,5 @@
 <?php
-	//inclusion de fichier de configuration
-	include('config.php');
+	session_start();
 		/*
 			on verifie si l'utilisateur est connecté 
 		*/
@@ -9,11 +8,17 @@
 			header('location:connexion.php');
 		}
 		else{
-			//il est connecté on recupere ses infos
-			$id = $_SESSION['id'];
-			$sql = mysql_query("SELECT * FROM users WHERE id = '$id'") or die('Erreur de la requête SQL');
-			//les donnees sous forme de tableau
-			$donnees = mysql_fetch_array($sql);
+			// il est connecté on recupere ses infos
+                        $id = $_SESSION['id'];
+                        $config = (require 'config.php');
+
+                        $conn = new PDO($config['DB_HOST'], $config['DB_USER'], $config['DB_PASS']);
+                        $query= $conn->prepare("SELECT * FROM users WHERE users_id = ?");
+                        $query->execute(array($id));
+                        //les donnees sous forme de tableau
+                        $donnees=$query->fetch();
+                        
+                        
 		?>
 	<!DOCTYPE html>
 	<html>
@@ -41,14 +46,15 @@
 					extract($_POST);
 					
 					//on verifie les champs vides
-					if(empty($pseudo) || empty($nom) || empty($prenom)){
+					if(empty($pseudo)){
 						$erreur = '<p class = "alert alert-danger">Veuillez remplir tous les champs</p>';
 					}
 					
 					//on verifie si le pseudo existe déja
-					$sql = mysql_query("SELECT * FROM users WHERE pseudo = '$pseudo' AND id != '".$donnees['id']."'") or die('Erreur de la requête SQL');
-					$total = mysql_num_rows($sql);
-					if($total != 0){
+					$query=$conn->prepare("SELECT * FROM users WHERE pseudo = ? AND id != ?") ;
+                                        $query->execute(array($pseudo,$donnees['id']));
+					$res=$query->fetchAll();
+					if(count($res) != 0){
 						//ce membre existe déja
 						$erreur = '<p class = "alert alert-danger">Ce pseudo existe déjà veuillez choisir un autre pseudo</p>';
 					}
@@ -67,14 +73,13 @@
 							//on crypte le mot de passe 
 							$password = md5($password);
 						}
-						$sql = mysql_query("UPDATE users SET pseudo = '$pseudo', nom = '$nom', prenom = '$prenom', sexe = '$sexe', password = '$password' WHERE id = '".$_SESSION['id']."'") or die('Erreur de la requête SQL');
-						if($sql){
+						$query=$conn->prepare("UPDATE users SET pseudo = ?, password = ? WHERE users_id = ?") ;
+                                                $query->execute(array($pseudo,$password,$donnees['users_id']));
+						
 							//on le redirige sur la page d'accueil
 							header('location:index.php');
-						}
-						else{
-							$erreur = '<p class = "alert alert-danger">Une erreur est survenue lors de la mise à jours de votre compte</p>';
-						}
+						
+						
 					}
 					
 				}
@@ -91,30 +96,23 @@
 							<h4 class = "head">Modification de votre compte</h4>
 							<div class = "form-group">
 								<label for = "pseudo">Pseudo : </label>
-								<input type = "text" name = "pseudo" value = "<?php echo $donnees['pseudo'];?>" class = "form-control input-sm">
+								<input type = "text" name = "pseudo" value = "<?php echo $_SESSION['pseudo'];?>" class = "form-control input-sm">
 							</div>
 							<div class = "form-group">
 								<label for = "password">Nouveau mot de passe : (laisser à vide pour garder l'ancien)</label>
 								<input type = "password" name = "password" value = "" class = "form-control  input-sm">
 							</div>
-							<div class = "form-group">
-								<label for = "nom">Nom : </label>
-								<input type = "text" name = "nom" value = "<?php echo $donnees['nom'];?>" class = "form-control input-sm">
-							</div>
-							<div class = "form-group">
-								<label for = "prenom">Prénom : </label>
-								<input type = "text" name = "prenom" value = "<?php echo $donnees['prenom'];?>" class = "form-control input-sm">
-							</div>
-							<div class = "form-group">
-								<label for = "sexe">Sexe : &nbsp; </label>
-								<input type = "radio" name = "sexe" value = "masculin" <?php echo ($donnees['sexe'] == 'masculin')?'checked':'';?> class = "radio-inline"> Masculin <input type = "radio" name = "sexe" value = "feminin"  <?php echo ($donnees['sexe'] == 'feminin')?'checked':'';?> class = "radio-inline"> Féminin
-							</div>
+							
+							
 							<div class = "form-group">
 								<input type = "submit" name = "submit" value = "Valider" class = "btn btn-sm btn-primary btn-block">
 							</div>
+                                                        <a class = "btn btn-sm btn-primary" href = "index.php">Retour</a>
+                                                         
 						</form>
 					</div>
 				</div>
+                       
 		<?php	
 			}
 		?>		

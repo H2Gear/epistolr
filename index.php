@@ -56,7 +56,7 @@
                         <p>Pseudo : <b><?php echo $donnees[0]['pseudo']; ?></b></p>
                         <p>Mail : <b><?php echo $donnees[0]['mail']; ?></b></p>
                         <p>
-                            <a class = "btn btn-sm btn-primary" href = "membres.php"><i class = "glyphicon glyphicon-th-list"></i> Liste des membres</a>
+                            
                             <a class = "btn btn-sm btn-success" href = "modifier.php"><i class = "glyphicon glyphicon-edit"></i> Modifier votre profil</a>
                             <a class = "btn btn-sm btn-info" href = "deconnexion.php"><i class = "glyphicon glyphicon-off"></i> Déconnexion</a>
                         </p>
