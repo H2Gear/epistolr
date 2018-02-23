@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
@@ -35,14 +35,15 @@
     } else {
         // il est connecté on recupere ses infos
         $id = $_SESSION['id'];
-        $config = (require 'config.php');
+        include 'config.php';
 
-        $conn = new PDO($config['DB_HOST'], $config['DB_USER'], $config['DB_PASS']);
-        $query = $conn->prepare("SELECT * FROM users WHERE users_id = ?");
+        $conn = $pdo;
+	$query = $conn->prepare("SELECT * FROM users WHERE id = ?");
         $query->execute(array($id));
         //les donnees sous forme de tableau
         $donnees = $query->fetch();
         ?>
+
         <?php
         //on verifie si le formulaire a été envoyé
         if (isset($_POST['submit'])) {
@@ -65,8 +66,8 @@
                 //tout est OK on enregistre l'utilisateur
                 //on crypte le mot de passe 
 
-                $query = $conn->prepare("INSERT INTO messages(users_id, texte, titre) VALUES(?,?, ?)");
-                $query->execute(array($donnees['users_id'], $content, $titre));
+                $query = $conn->prepare("INSERT INTO messages(id, texte, titre) VALUES(?,?, ?)");
+                $query->execute(array($donnees['id'], $content, $titre));
                 $conn = null;
 
                 if ($query) {

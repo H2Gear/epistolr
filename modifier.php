@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 	session_start();
 		/*
 			on verifie si l'utilisateur est connecté 
@@ -9,15 +9,15 @@
 		}
 		else{
 			// il est connecté on recupere ses infos
-                        $id = $_SESSION['id'];
-                        $config = (require 'config.php');
+                        
+                        include 'config.php';
 
-                        $conn = new PDO($config['DB_HOST'], $config['DB_USER'], $config['DB_PASS']);
-                        $query= $conn->prepare("SELECT * FROM users WHERE users_id = ?");
-                        $query->execute(array($id));
+                        $conn = $pdo;
+			$query= $conn->prepare("SELECT * FROM users WHERE id = ?");
+			$id = $_SESSION['id'];                       
+			$query->execute(array($id));
                         //les donnees sous forme de tableau
                         $donnees=$query->fetch();
-                        
                         
 		?>
 	<!DOCTYPE html>
@@ -60,6 +60,7 @@
 					}
 					
 					
+
 					if($erreur == null){
 						//tout est OK on fait la mise à jours de l'utilisateur
 						/* si le mot de passe est saisi on change dans le cas contraire
@@ -73,8 +74,8 @@
 							//on crypte le mot de passe 
 							$password = md5($password);
 						}
-						$query=$conn->prepare("UPDATE users SET pseudo = ?, password = ? WHERE users_id = ?") ;
-                                                $query->execute(array($pseudo,$password,$donnees['users_id']));
+						$query=$conn->prepare("UPDATE users SET pseudo = ?, password = ? WHERE 	id = ?") ;
+                                                $query->execute(array($pseudo,$password,$donnees['id']));
 						
 							//on le redirige sur la page d'accueil
 							header('location:index.php');
@@ -96,7 +97,7 @@
 							<h4 class = "head">Modification de votre compte</h4>
 							<div class = "form-group">
 								<label for = "pseudo">Pseudo : </label>
-								<input type = "text" name = "pseudo" value = "<?php echo $_SESSION['pseudo'];?>" class = "form-control input-sm">
+								<input type = "text" name = "pseudo" value = "<?php echo $_SESSION['pseudo'] ?>" class = "form-control input-sm">
 							</div>
 							<div class = "form-group">
 								<label for = "password">Nouveau mot de passe : (laisser à vide pour garder l'ancien)</label>

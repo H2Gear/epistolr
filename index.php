@@ -1,3 +1,5 @@
+﻿
+
 
 <!DOCTYPE html>
 <html>
@@ -32,7 +34,8 @@
                     
                    session_start();
                   
-                    if (!isset($_SESSION['id']) || !isset($_SESSION['pseudo'])) {
+                    if (!isset($_SESSION['pseudo']) || !isset($_SESSION['id']))
+			{
                         //l'utilisateur n'est pas connecté
                         echo '<p>Vous n\'etes pas encore connecté(e)
 											<a class = "btn btn-sm btn-primary" href = "connexion.php"><i class = "glyphicon glyphicon-off"></i> Connexion</a> ou
@@ -40,28 +43,28 @@
 											</p>';
                     } else {
                         // il est connecté on recupere ses infos
-                        $id = $_SESSION['id'];
-                        $config = (require 'config.php');
-
-                        $conn = new PDO($config['DB_HOST'], $config['DB_USER'], $config['DB_PASS']);
-                        $query= $conn->prepare("SELECT * FROM users WHERE users_id = ?");
+                        include 'config.php';
+                        $query= $pdo->prepare("SELECT * FROM users WHERE id = ?");
+			extract ($_SESSION);
                         $query->execute(array($id));
-                        //les donnees sous forme de tableau
                         $donnees=$query->fetchAll();
-                        
+                        extract($donnees['0'])
                         ?>
 
 
-                    <p>Bienvenue dans votre compte <b><?php echo $donnees[0]['pseudo']; ?></b><br> voici vos informations</p>
-                        <p>Pseudo : <b><?php echo $donnees[0]['pseudo']; ?></b></p>
-                        <p>Mail : <b><?php echo $donnees[0]['mail']; ?></b></p>
+                    <p>Bienvenue dans votre compte, <b><?php echo $pseudo . ' ! '; ?></b><br> voici vos informations</p>
+                        <p>Pseudo : <b><?php echo $pseudo; ?></b></p>
+                        <p>Mail : <b><?php echo $mail; ?></b></p>
                         <p>
                             <a class = "btn btn-sm btn-primary" href = "redaction.php"><i class = "glyphicon glyphicon-edit"></i> Rédiger</a>
-                            <a class = "btn btn-sm btn-primary" href = "mcorrespondances.php">Mes correspondances</a>
                             <a class = "btn btn-sm btn-success" href = "modifier.php"><i class = "glyphicon glyphicon-edit"></i> Modifier votre profil</a>
                             <a class = "btn btn-sm btn-info" href = "deconnexion.php"><i class = "glyphicon glyphicon-off"></i> Déconnexion</a>
                         </p>
-                        <?php
+                        <p>
+					 <a class = "btn btn-sm btn-primary" href = "profil.php"><i class = "glyphicon glyphicon-th-list"></i> Profil </a>
+					 <a class = "btn btn-sm btn-default" href = "index.php"> &laquo;  <i class = "glyphicon glyphicon-user"></i> Votre compte / Index / Espace Membre </a>
+				 </p>
+<?php
                     }
                     ?>
                 </div>

@@ -1,14 +1,20 @@
 <?php
-//inclusion de fichier de configuration
+
+// __ INCLUSION DU FICHIER DE CONFIGURATION // CONNEXION A BDD __ 
+
 include('config.php');
 ?>
+
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8">
+
+        <meta charset="utf-8">	
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Espace membre</title>
+
+
 
         <!-- CSS de Bootstrap -->
         <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -20,9 +26,11 @@ include('config.php');
         <div class = "container">
             <br />
             <?php
-            //on verifie si le formulaire a été envoyé
+
+            //  ___ VERIFICATION CONFORMITE AVANT ENVOI DANS BDD ___
+
             if (isset($_POST['submit'])) {
-                //la variable erreur vaut null par défaut
+                //la variable erreur vaut null par d�faut
                 $erreur = null;
                 //on convertit chaque champ en variable avec la fonction extract()
                 extract($_POST);
@@ -31,47 +39,37 @@ include('config.php');
                 if (empty($pseudo) || empty($password) || empty($confirm_password) || empty($mail) || empty($confirm_mail)) {
                     $erreur = '<p class = "alert alert-danger">Veuillez remplir tous les champs</p>';
                 }
-                //si le mot de passe est égal à la confirmation
+                //si le mot de passe est �gal � la confirmation
                 else if ($password != $confirm_password) {
-                    $erreur = '<p class = "alert alert-danger">Les deux mots de passe sont différents</p>';
+                    $erreur = '<p class = "alert alert-danger">Les deux mots de passe sont diff�rents</p>';
                 }
                 //si les adresses mail diff
                 else if ($mail != $confirm_mail) {
-                    $erreur = '<p class = "alert alert-danger">Les deux adresses mail sont différentes</p>';
+                    $erreur = '<p class = "alert alert-danger">Les deux adresses mail sont diff�rentes</p>';
                 }
-                //on verifie si le pseudo existe déja
-                $config = (require 'config.php');
 
-                $conn = new PDO($config['DB_HOST'], $config['DB_USER'], $config['DB_PASS']);
-
-
-
-
-                $query = $conn->prepare("SELECT users_id FROM users WHERE pseudo = ?");
+          		include 'config.php';
+			$conn = $pdo;
+			$query = $conn->prepare('SELECT pseudo FROM users WHERE pseudo = ?');
                 $query->setFetchMode(PDO::FETCH_ASSOC);
                 $query->execute(array($pseudo));
                 $rows = $query->fetchAll();
                 if (count($rows) != 0) {
-                    $erreur = '<p class = "alert alert-danger">Ce pseudo existe déjà veuillez choisir un autre pseudo</p>';
+                    $erreur = '<p class = "alert alert-danger">Ce pseudo existe deja veuillez choisir un autre pseudo</p>';
                 }
-
-
-
-
-
 
                 if ($erreur == null) {
                     //tout est OK on enregistre l'utilisateur
                     //on crypte le mot de passe 
                     $password = md5($password);
-                    $query = $conn->prepare("INSERT INTO users(pseudo, mail, password) VALUES(?, ?, ?)");
+                    $query = $conn->prepare("INSERT INTO users (pseudo, mail, password) VALUES(?, ?, ?)");
                     $query->execute(array($pseudo, $mail, $password));
                     $conn=null;
 
                     if ($query) {
-                        echo '<p class = "alert alert-success">Votre compte a été créé avec succès <a class = "btn btn-sm btn-primary" href = "connexion.php"><i class = "glyphicon glyphicon-off"></i> Connexion</a></p>';
+                        echo '<p class = "alert alert-success">Votre compte a ete cree avec succes <a class = "btn btn-sm btn-primary" href = "connexion.php"><i class = "glyphicon glyphicon-off"></i> Connexion</a></p>';
                     } else {
-                        $erreur = '<p class = "alert alert-danger">Une erreur est survenue lors de la création de votre compte</p>';
+                        $erreur = '<p class = "alert alert-danger">Une erreur est survenue lors de la cr�ation de votre compte</p>';
                     }
                 }
             }
@@ -82,10 +80,12 @@ include('config.php');
                 echo $erreur;
             }
             ?>
-            <div class "row">
-                 <div class = "col-lg-offset-4 col-lg-4 col-lg-offset-4">
+	<div class "row">
+		<div class = "col-lg-offset-4 col-lg-4 col-lg-offset-4">
+
+
                     <form action = "inscription.php" method = "post" class = "well">
-                        <h4 class = "head">Créer votre compte gratuitement</h4>
+                        <h4 class = "head">Creer votre compte gratuitement</h4>
                         <div class = "form-group">
                             <label for = "pseudo">Pseudo : </label>
                             <input type = "text" name = "pseudo" value = "" class = "form-control input-sm">
@@ -106,17 +106,15 @@ include('config.php');
                             <label for = "confirm_password">Confirmation de mot de passe : </label>
                             <input type = "password" name = "confirm_password" value = "" class = "form-control  input-sm">
                         </div>
-
-
                         <div class = "form-group">
                             <input type = "submit" name = "submit" value = "Valider" class = "btn btn-sm btn-primary btn-block">
                         </div>
                     </form>
-                </div>
-            </div>
+		</div>
+	</div>
 
-        </div>
-        <!-- Bibliothèque JavaScript jquery -->
+
+        <!-- Biblioth�que JavaScript jquery -->
         <script src="bootstrap/js/jquery.min.js"></script>
 
         <!--  JavaScript de Bootstrap -->

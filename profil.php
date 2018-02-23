@@ -1,16 +1,17 @@
-<?php
+﻿<?php
 	//inclusion de fichier de configuration
 	include('config.php');
+	//session_start();
 	
-	if(!isset($_SESSION['id']) || !isset($_SESSION['pseudo'])){
+	if(isset($_SESSION['id']) || isset($_SESSION['pseudo'])){
 		//l'utilisateur n'est pas connecté on le redirige sur la page de connexion
 		header('location:connexion.php');
 	}
 	
 	//on verifie si l'id de existe 
-	if(!isset($_GET['id'])){
+	if(isset($_GET['id'])){
 		//l'id de l'utilisateur n'existe pas on le redirige sur la page des membres
-		header('location:membres.php');
+		header('location:index.php');
 	}
 	else{
 		$id = mysql_escape_string($_GET['id']);

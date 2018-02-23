@@ -1,21 +1,26 @@
 <?php
+	
 	session_start();
-	//on verifie si le formulaire a été envoyé
+
+	//on verifie si le formulaire a ete envoye
 	if(isset($_POST['submit'])){
+
+
 		//la variable erreur vaut null par défaut
 		$erreur = null;
 		//on convertit chaque champ en variable avec la fonction extract()
 		extract($_POST);
 		
-		//on verifie les champs vides
+
+
+		//on verifie les champs
 		if(empty($pseudo) || empty($password)){
 			$erreur = '<p class = "alert alert-danger">Veuillez remplir tous les champs</p>';
 		}
-		
 		//on verifie si le pseudo existe déja
-                $config=(require 'config.php');
+                include 'config.php';
                 
-                $conn=new PDO($config['DB_HOST'],$config['DB_USER'],$config['DB_PASS']);
+                $conn= $pdo;
 		$query = $conn->prepare("SELECT * FROM users WHERE pseudo = ?");
 		$query->execute(array($pseudo));
                 $rows=$query->fetchAll();
@@ -41,30 +46,36 @@
 				//tout est bon on enregistre les données de l'utilisateur en session
 				
                                 $_SESSION['pseudo'] = $pseudo;
-				$_SESSION['id'] = $rows[0]['users_id'];
+				$_SESSION['id'] = $rows[0]['id'];
 				//on le redirige sur la page d'accueil
                                 $conn=null;
-                               
+
 				header('location:index.php');
 			}
-			
 		}		
 	}
 ?>
+
 <!DOCTYPE html>
 <html>
+
+
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
     <title>Espace membre</title>
+
 
     <!-- CSS de Bootstrap -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	 <!-- Notre style CSS  -->
-    <link href="bootstrap/css/style.css" rel="stylesheet">
-	
+    <link href="bootstrap/css/style.css" rel="stylesheet">	
   </head>
+
+
   <body>
 	<div class = "container">
 		<br />
@@ -94,7 +105,6 @@
 					</form>
 				</div>
 			</div>
-				
 	</div>
 	<!-- Bibliothèque JavaScript jquery -->
     <script src="bootstrap/js/jquery.min.js"></script>
