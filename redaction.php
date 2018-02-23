@@ -97,7 +97,7 @@
 
 
             <div class = "form-group">
-                <input type = "submit" name = "submit" value = "Valider" class = "btn btn-sm btn-primary btn-block">
+                <input type = "submit" name = "submit" value = "Valider">
             </div>
         </form>
         <?php
