@@ -32,7 +32,8 @@
 											<a class = "btn btn-sm btn-primary" href = "connexion.php"><i class = "glyphicon glyphicon-off"></i> Connexion</a> ou
 											<a class = "btn btn-sm btn-success" href = "inscription.php"><i class = "glyphicon glyphicon-user"></i> Créer votre compte</a>
 											</p>';
-    } else {
+    } else 
+	{
         // il est connecté on recupere ses infos
         $id = $_SESSION['id'];
         $config = (require 'config.php');
@@ -69,38 +70,38 @@
         
     ?>
     
-    <h1>Mes correspondances</h1>
-    <a class = "btn btn-sm btn-primary" href = "index.php">Retour</a>
-    <form action="mcorrespondances.php" method="post" class="well">
-       
-        <?php 
-        
-                $query = $conn->prepare("SELECT titre, messages_id FROM messages WHERE users_id = ?");
-                $query->execute(array($donnees['users_id']));
-                $res=$query->fetchAll();
-                
-                
-                for ($i=0;$i<count($res);$i++){
-                    echo '<input type="radio" name="choix" value="'.$res[$i]['messages_id'].'" id="choix'.$i.'">';
-                    echo '<label for = "choix'.$i.'">'.$res[$i]['titre'].'</label><br>';
-                }
-        
-        ?>
-        <input type = "submit" name = "submit" value = "Valider" class = "btn btn-sm btn-primary btn-block"> 
-    </form>
-    
-        
-                <h2><?php if(isset($titre)){echo "$titre";} else {echo "";} ?> </h2>
-                
-            
-            <input id="x" name="content" value="<?php if(isset($content)){echo "$content"; }else { echo "";} ?>" type="hidden" name="content">
-         
-            <trix-editor input="x"></trix-editor>
-            
-
-
-            
-        
+    <body>
+        <div class = "container"><br />
+            <div class "row">
+                 <div class = "col-lg-offset-3 col-lg-6 col-lg-offset-3 well">
+					<h1>Ma correspondance avec ...</h1>
+					<a class = "btn btn-sm btn-primary" href = "index.php">Retour</a>
+					<form action="mcorrespondances.php" method="post" class="well">
+						<?php 
+						$query = $conn->prepare("SELECT titre, messages_id FROM messages WHERE users_id = ?");
+						$query->execute(array($donnees['users_id']));
+						$res=$query->fetchAll();
+						
+						
+						for ($i=0;$i<count($res);$i++)
+						{
+							echo '<input type="radio" name="choix" value="'.$res[$i]['messages_id'].'" id="choix'.$i.'">';
+							echo '<label for = "choix'.$i.'">'.$res[$i]['titre'].'</label><br>';
+						}
+						?>
+						<input type = "submit" name = "submit" value = "Valider" class = "btn btn-sm btn-primary btn-block"> 
+					</form>	
+						
+								<h2><?php if(isset($titre)){echo "$titre";} else {echo "";} ?> </h2>
+								
+							
+							<input id="x" name="content" value="<?php if(isset($content)){echo "$content"; }else { echo "";} ?>" type="hidden" name="content">
+						 
+							<trix-editor input="x"></trix-editor>
+                </div>
+            </div>
+        </div>
+    </body>
         <?php
     }
     ?>

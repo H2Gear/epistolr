@@ -3,9 +3,8 @@
 	session_start();
 
 	//on verifie si le formulaire a ete envoye
-	if(isset($_POST['submit'])){
-
-
+	if(isset($_POST['submit']))
+	{
 		//la variable erreur vaut null par défaut
 		$erreur = null;
 		//on convertit chaque champ en variable avec la fonction extract()
@@ -14,20 +13,22 @@
 
 
 		//on verifie les champs
-		if(empty($pseudo) || empty($password)){
+		if(empty($pseudo) || empty($password))
+		{
 			$erreur = '<p class = "alert alert-danger">Veuillez remplir tous les champs</p>';
 		}
 		//on verifie si le pseudo existe déja
-                include 'config.php';
                 
-                $conn= $pdo;
-		$query = $conn->prepare("SELECT * FROM users WHERE pseudo = ?");
+		$config = (require 'config.php');
+		$conn = new PDO($config['DB_HOST'], $config['DB_USER'], $config['DB_PASS'], [$config['DB_OPT']]);
+
+		$query = $conn->prepare("SELECT * FROM membre WHERE pseudo = ?");
 		$query->execute(array($pseudo));
                 $rows=$query->fetchAll();
                 
 		if(count($rows) != 1){
 			//ce membre n'existe pas
-			$erreur = '<p class = "alert alert-danger">Ce pseudo n\'existe pas dans notre base de donn�es</p>';
+			$erreur = '<p class = "alert alert-danger">Ce pseudo n\'existe pas dans notre base de données</p>';
 		}
 		else{
 			/*
@@ -38,15 +39,16 @@
 			$password = md5($password);
 			
 			
-                if($rows[0]['password'] !== $password){
+                if($rows[0]['mdp'] !== $password){
 				//le mot de passe est incorrect
 				$erreur = '<p class = "alert alert-danger">Votre mot de passe est incorrect</p>';
 			}
 			else{
 				//tout est bon on enregistre les données de l'utilisateur en session
+				$_SESSION['pseudo'] = $pseudo;
+				$_SESSION['id'] = $rows[0]['membre_id'];
 				
-                                $_SESSION['pseudo'] = $pseudo;
-				$_SESSION['id'] = $rows[0]['id'];
+				
 				//on le redirige sur la page d'accueil
                                 $conn=null;
 
@@ -80,31 +82,31 @@
 	<div class = "container">
 		<br />
 		 <?php
-			
-			//on affiche le formulaire
-			//s'il ya des erreurs alors on les affiche
-			if(isset($erreur)){
-				echo $erreur;
-			}
-			?>
-			<div class "row">
-				<div class = "col-lg-offset-4 col-lg-4 col-lg-offset-4">
-					<form action = "connexion.php" method = "post" class = "well">
-						<h4 class = "head">Connexion à votre compte</h4>
-						<div class = "form-group">
-							<label for = "pseudo">Pseudo : </label>
-							<input type = "text" name = "pseudo" value = "" class = "form-control input-sm">
-						</div>
-						<div class = "form-group">
-							<label for = "password">Mot de passe : </label>
-							<input type = "password" name = "password" value = "" class = "form-control  input-sm">
-						</div>
-						<div class = "form-group">
-							<input type = "submit" name = "submit" value = "Valider" class = "btn btn-sm btn-primary btn-block">
-						</div>
-					</form>
-				</div>
+		
+		//on affiche le formulaire
+		//s'il ya des erreurs alors on les affiche
+		if(isset($erreur)){
+			echo $erreur;
+		}
+		?>
+		<div class "row">
+			<div class = "col-lg-offset-4 col-lg-4 col-lg-offset-4">
+				<form action = "connexion.php" method = "post" class = "well">
+					<h4 class = "head">Connexion à votre compte</h4>
+					<div class = "form-group">
+						<label for = "pseudo">Pseudo : </label>
+						<input type = "text" name = "pseudo" value = "" class = "form-control input-sm">
+					</div>
+					<div class = "form-group">
+						<label for = "password">Mot de passe : </label>
+						<input type = "password" name = "password" value = "" class = "form-control  input-sm">
+					</div>
+					<div class = "form-group">
+						<input type = "submit" name = "submit" value = "Valider" class = "btn btn-sm btn-primary btn-block">
+					</div>
+				</form>
 			</div>
+		</div>
 	</div>
 	<!-- Bibliothèque JavaScript jquery -->
     <script src="bootstrap/js/jquery.min.js"></script>

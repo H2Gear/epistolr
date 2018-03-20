@@ -21,7 +21,14 @@ include('config.php');
         <!-- Notre style CSS  -->
         <link href="bootstrap/css/style.css" rel="stylesheet">
 
+		
+		
+		
+		
     </head>
+	
+	
+	
     <body>
         <div class = "container">
             <br />
@@ -48,13 +55,16 @@ include('config.php');
                     $erreur = '<p class = "alert alert-danger">Les deux adresses mail sont différentes</p>';
                 }
 
-          		include 'config.php';
-			$conn = $pdo;
-			$query = $conn->prepare('SELECT pseudo FROM users WHERE pseudo = ?');
+				
+
+                $config = require('config.php');
+				$conn = new PDO($config['DB_HOST'], $config['DB_USER'], $config['DB_PASS']);
+				$query = $conn->prepare('SELECT pseudo FROM membre WHERE pseudo = ?');
                 $query->setFetchMode(PDO::FETCH_ASSOC);
                 $query->execute(array($pseudo));
                 $rows = $query->fetchAll();
-                if (count($rows) != 0) {
+                if (count($rows) != 0) 
+				{
                     $erreur = '<p class = "alert alert-danger">Ce pseudo existe deja veuillez choisir un autre pseudo</p>';
                 }
 
@@ -62,7 +72,7 @@ include('config.php');
                     //tout est OK on enregistre l'utilisateur
                     //on crypte le mot de passe 
                     $password = md5($password);
-                    $query = $conn->prepare("INSERT INTO users (pseudo, mail, password) VALUES(?, ?, ?)");
+                    $query = $conn->prepare("INSERT INTO membre (pseudo, email, mdp) VALUES(?, ?, ?)");
                     $query->execute(array($pseudo, $mail, $password));
                     $conn=null;
 

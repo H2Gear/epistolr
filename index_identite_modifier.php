@@ -95,21 +95,21 @@
 				<div class "row">
 					<div class = "col-lg-offset-4 col-lg-4 col-lg-offset-4">
 						<form action = "modifier.php" method = "post" class = "well">
-							<h4 class = "head">Modification de votre compte </br> Modification de la BDD "membre"</h4>
+							<h4 class = "head">Modification de votre compte </br> Modification de la table "identite" ou "profil (arthus)"</h4>
 							<div class = "form-group">
-								<label for = "pseudo">Pseudo : </label>
-								<input type = "text" name = "pseudo" value = "<?php echo $_SESSION['pseudo'] ?>" class = "form-control input-sm">
+								<label for = "pseudo">Choisissez avec le menu défilant un des titres à modifier : </label>
+								<input type = "text" name = "pseudo" value = "menu défilant à mettre" class = "form-control input-sm">
 							</div>
 							<div class = "form-group">
-								<label for = "password">Nouveau mot de passe : (laisser à vide pour garder l'ancien)</label>
-								<input type = "password" name = "password" value = "" class = "form-control  input-sm">
+								<label for = "texte">L'ancien texte s'affiche par défaut, et libre à l'utilisateur de mettre à jour</label>
+								<input type = "texte" name = "texte" value = "ici le texte que j'avais écrit" class = "form-control  input-sm">
 							</div>
 							
 							
 							<div class = "form-group">
 								<input type = "submit" name = "submit" value = "Valider" class = "btn btn-sm btn-primary btn-block">
 							</div>
-                                                        <a class = "btn btn-sm btn-primary" href = "profil.php">Retour au profil</a>
+                                                        <a class = "btn btn-sm btn-primary" href = "index.php">Retour</a>
                                                          
 						</form>
 					</div>

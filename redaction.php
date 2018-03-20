@@ -34,15 +34,15 @@
 											</p>';
     } else {
         // il est connecté on recupere ses infos
-        $id = $_SESSION['id'];
-        include 'config.php';
+		/*
+		$config = (require 'config.php');
+		$conn = new PDO($config['DB_HOST'], $config['DB_USER'], $config['DB_PASS'], [$config['DB_OPT']]);
 
-        $conn = $pdo;
-	$query = $conn->prepare("SELECT * FROM users WHERE id = ?");
-        $query->execute(array($id));
-        //les donnees sous forme de tableau
+        $query->execute(array($_SESSION['id']));
         $donnees = $query->fetch();
-        ?>
+        */
+		
+		?>
 
         <?php
         //on verifie si le formulaire a été envoyé

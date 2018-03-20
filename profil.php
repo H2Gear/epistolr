@@ -1,9 +1,11 @@
 ﻿<?php
 	//inclusion de fichier de configuration
-	include('config.php');
-	//session_start();
 	
-	if(isset($_SESSION['id']) || isset($_SESSION['pseudo'])){
+	session_start();
+	
+                  print_r($_SESSION);
+				  
+	if(!isset($_SESSION['id']) || !isset($_SESSION['pseudo'])){
 		//l'utilisateur n'est pas connecté on le redirige sur la page de connexion
 		header('location:connexion.php');
 	}
@@ -13,9 +15,23 @@
 		//l'id de l'utilisateur n'existe pas on le redirige sur la page des membres
 		header('location:index.php');
 	}
+	
+	
+                        // il est connecté on recupere ses infos
+                        
+						$config = (require 'config.php');
+						$conn = new PDO($config['DB_HOST'], $config['DB_USER'], $config['DB_PASS'], [$config['DB_OPT']]);
+                        $query= $conn->prepare("SELECT * FROM users WHERE users_id = ?");
+                        $query->execute(array($_SESSION['id']));
+                        $donnees=$query->fetchAll();
+                        extract($donnees['0']);
+						
+
+	
+/*
 	else{
-		$id = mysql_escape_string($_GET['id']);
-		$sql = mysql_query("SELECT * FROM users WHERE id = '$id'") or die('Erreur de la requête SQL');
+		$id = mysql_real_escape_string($_GET['id']);
+		$sql = mysql_query("SELECT * FROM users WHERE users_id = '$id'") or die('Erreur de la requête SQL');
 		//les donnees sous forme de tableau
 		$donnees = mysql_fetch_array($sql);
 		if(empty($donnees)){
@@ -23,6 +39,9 @@
 			header('location:membres.php');
 		}
 	}
+*/
+
+	
 ?>
 <!DOCTYPE html>
 <html>
@@ -43,16 +62,29 @@
 		<br />
 		<div class "row">
 			<div class = "col-lg-offset-3 col-lg-6 col-lg-offset-3 well">
-				<h2>Espace membre de <?php echo $donnees['pseudo'];?></h2>
-				<p>Bienvenue dans votre compte <b><?php echo $donnees['pseudo'];?></b> voici vos informations</p>
-				<p>Pseudo : <b><?php echo $donnees['pseudo'];?></b></p>
-				<p>Nom : <b><?php echo $donnees['nom'];?></b></p>
-				<p>Prénom : <b><?php echo $donnees['prenom'];?></b></p>
-				<p>Sexe : <b><?php echo $donnees['sexe'];?></b></p>
-				<p>
-					 <a class = "btn btn-sm btn-primary" href = "membres.php"><i class = "glyphicon glyphicon-th-list"></i> Liste des membres</a>
-					 <a class = "btn btn-sm btn-default" href = "index.php"> &laquo;  <i class = "glyphicon glyphicon-user"></i> Votre compte</a>
+				<h2>Profil </br> Données de la table "compte" ou "membre"</h2>
+				
+				<p>Voici vos informations : </p>
+				<p>Pseudo : <b><?php echo $pseudo;?></b></p>
+				<p>Nom : <b><?php echo $nom;?></b></p>
+				<p>Prénom : <b><?php echo $prenom;?></b></p>
+				<p>Sexe : <b><?php echo $sexe;?></b></p>
+				
+				<p></br></br></br></br>	
+				<a class = "btn btn-sm btn-success" href = "modifier.php"><i class = "glyphicon glyphicon-edit"></i> Modifier votre profil</a>
+				</p>
+							 
+				 <p></br></br></br></br>
+				 <a class = "btn btn-sm btn-default" href = "index.php"> &laquo;  <i class = "glyphicon glyphicon-user"></i> Votre espace membre</a>
 				 </p>
+				 
+				 <p>
+				 </br>
+					Ci dessous les liens concernant tout ce qui a attrait au compte et paramètres
+					</br>
+					<a class = "btn btn-sm btn-default" href = "deconnexion.php"><i class = "glyphicon glyphicon-off"></i> Déconnexion</a>
+				 </p>
+				 
 			</div>
 		</div>
 	</div>
@@ -62,4 +94,5 @@
 	<!--  JavaScript de Bootstrap -->
 	<script src="bootstrap/js/bootstrap.min.js"></script>
   </body>
+  
 </html>
